@@ -28,14 +28,29 @@
             </div>
             <div class="stock-info" *ngIf="showStock">
               <span class="stock-green">Estoque: {{ item.OnHand }}</span>
-              <span class="stock-gray">Produção {{ item.OnOrder || 0}}</span>
-              <span class="stock-orange">Carregamento: {{ getQuantidadeEmCarregamento(item) }}</span>
-              <span class="stock-purple">Balanço: {{ item.OnHand - getQuantidadeEmCarregamento(item) }}</span>
+              <span class="stock-gray">Produção: {{ item.OnOrder || 0 }}</span>
+              <span class="stock-orange">
+                Carregamento: 
+                <ng-container *ngIf="isLoading[item.ItemCode]; else loadedCarregamento">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </ng-container>
+                <ng-template #loadedCarregamento>
+                  {{ quantidadesEmCarregamento[item.ItemCode] ?? 0 }}
+                </ng-template>
+              </span>
+              <span class="stock-purple">
+                Balanço: 
+                <ng-container *ngIf="isLoading[item.ItemCode]; else loadedBalanco">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </ng-container>
+                <ng-template #loadedBalanco>
+                  {{ item.OnHand - (quantidadesEmCarregamento[item.ItemCode] ?? 0) }}
+                </ng-template>
+              </span>
             </div>
           </li>
         </ul>
       </div>
-      <!-- Botão Carregar Mais -->
       <div class="text-center mt-3 load-more-wrapper" *ngIf="nextLink">
         <button class="btn btn-primary" (click)="loadMoreOrders()">Carregar Mais</button>
       </div>

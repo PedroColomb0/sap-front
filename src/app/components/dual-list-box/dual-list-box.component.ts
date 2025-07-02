@@ -17,15 +17,24 @@ export class DualListBoxComponent {
   @Output() selectedItemsChange = new EventEmitter<PedidoVenda[]>();
   @Output() loadMore = new EventEmitter<void>();
 
-  quantidadesEmCarregamento: {[itemCode: string]: number} = {};
+  quantidadesEmCarregamento: { [itemCode: string]: number | undefined } = {};
+  isLoading: { [itemCode: string]: boolean } = {};
   searchTermAvailable: string = '';
   searchTermSelected: string = '';
   carregamentoPorPedido: boolean = false;
   isSelectedListCollapsed: boolean = false;
 
-  constructor(private alertService: AlertService,
-    private ordemCarregamentoService : OrdemCarregamentoService
+  constructor(
+    private alertService: AlertService,
+    private ordemCarregamentoService: OrdemCarregamentoService
   ) {}
+
+  ngOnChanges(): void {
+    // Reload quantidades when availableItems changes
+    if (this.showStock) {
+      this.loadQuantidadesEmCarregamento();
+    }
+  }
 
   get totalSelectedWeight(): number {
     return this.selectedItems.reduce((sum, item) => sum + (item.Quantity * item.Weight1), 0);
@@ -90,20 +99,29 @@ export class DualListBoxComponent {
   }
 
   getQuantidadeEmCarregamento(item: PedidoVenda): number {
-    return item.quantidadeEmCarregamento || 0;
+    return this.quantidadesEmCarregamento[item.ItemCode] ?? 0;
   }
 
   loadQuantidadesEmCarregamento() {
     this.availableItems.forEach(item => {
-      if (item.ItemCode) {
+      if (item.ItemCode && !this.isLoading[item.ItemCode]) {
+        this.isLoading[item.ItemCode] = true;
+        this.quantidadesEmCarregamento[item.ItemCode] = undefined;
         this.ordemCarregamentoService.getEstoqueEmCarregamento(item.ItemCode)
-          .subscribe(quantidade => {
-            this.quantidadesEmCarregamento[item.ItemCode] = quantidade;
+          .subscribe({
+            next: (quantidade) => {
+              this.quantidadesEmCarregamento[item.ItemCode] = quantidade;
+              this.isLoading[item.ItemCode] = false;
+            },
+            error: (err) => {
+              console.error(`Error loading quantidade for ${item.ItemCode}:`, err);
+              this.quantidadesEmCarregamento[item.ItemCode] = 0;
+              this.isLoading[item.ItemCode] = false;
+            }
           });
       }
     });
   }
-
 
   toggleCarregamentoPorPedido(): void {
     this.carregamentoPorPedido = !this.carregamentoPorPedido;
