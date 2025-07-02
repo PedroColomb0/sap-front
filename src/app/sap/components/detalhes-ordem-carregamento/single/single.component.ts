@@ -287,13 +287,13 @@ prepararPayloadNotaFiscal(): any[] {
       BPL_IDAssignedToInvoice: this.selected.U_filial3?.toString(),
       Comments: `Nota fiscal gerada a partir da ordem de carregamento ${this.selected.DocEntry} para o pedido ${numPedido}`,
       U_id_pedido_forca: this.selected.DocEntry?.toString(),
+      U_ordemCarregamento: this.selected.DocEntry, // Adiciona o DocEntry da ordem de carregamento
       U_numDocPedido: numPedido.toString() // Adiciona o número do pedido como referência
     });
   });
 
   return notasFiscais;
 }
-
   goToPage(page: number) {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
