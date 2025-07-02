@@ -206,77 +206,92 @@ gerarNotaFiscalComLotes() {
 
   this.loading = true;
   
-  // Prepara o payload da nota fiscal com os lotes selecionados
-  const notaFiscalPayload = this.prepararPayloadNotaFiscal();
+  const notasFiscais = this.prepararPayloadNotaFiscal();
   
-  console.log('Payload sendo enviado:', JSON.stringify(notaFiscalPayload, null, 2));
-  
-  // Chama o serviço para criar a nota fiscal
-  this.invoiceGenerationService.generateInvoiceFromLoadingOrder(notaFiscalPayload)
-    .subscribe({
-      next: (response) => {
-        this.alertService.confirm('Nota fiscal gerada com sucesso!');
-        this.selected.U_Status = 'Fechado';
-        this.showModalLote = false;
-      },
-      error: (error) => {
-        console.error('Erro detalhado:', error);
-        const errorMsg = error.error?.message || error.message || 'Erro desconhecido';
-        this.alertService.error(`Erro ao gerar nota fiscal: ${errorMsg}`);
-      },
-      complete: () => {
-        this.loading = false;
-      }
+  const requests = notasFiscais.map(nota => 
+    this.invoiceGenerationService.generateInvoiceFromLoadingOrder(nota).toPromise()
+  );
+
+  Promise.all(requests)
+    .then(responses => {
+      this.alertService.confirm(`Notas fiscais geradas com sucesso! Total: ${responses.length}`);
+      this.selected.U_Status = 'Fechado';
+      this.showModalLote = false;
+    })
+    .catch(error => {
+      console.error('Erro detalhado:', error);
+      const errorMsg = error.error?.message || error.message || 'Erro desconhecido';
+      this.alertService.error(`Erro ao gerar notas fiscais: ${errorMsg}`);
+    })
+    .finally(() => {
+      this.loading = false;
     });
 }
 
-prepararPayloadNotaFiscal(): any {
+prepararPayloadNotaFiscal(): any[] {
   const currentDate = new Date().toISOString().split('T')[0];
   
-  // Cria as linhas do documento com os lotes selecionados
-  const documentLines = [];
+  // Agrupar linhas por U_numDocPedido
+  const pedidosMap = new Map<number, any[]>();
   
-  // Para cada item da ordem original
   this.selected.ORD_CRG_LINHACollection.forEach(item => {
-    // Encontra o item correspondente nos agrupados
-    const itemAgrupado = this.itensSelecaoLoteAgrupado.find(
-      ag => ag.id === item.U_itemCode && ag.deposito === item.U_codigoDeposito
-    );
-    
-    if (itemAgrupado && itemAgrupado.lotes) {
-      // Adiciona cada lote como uma linha separada
-      itemAgrupado.lotes.forEach(lote => {
-        documentLines.push({
-          ItemCode: item.U_itemCode,
-          Quantity: lote.Quantity,
-          UnitPrice: item.U_precoUnitario,
-          WarehouseCode: item.U_codigoDeposito,
-          Usage: item.U_usage,
-          TaxCode: item.U_taxCode,
-          CostingCode: item.U_costingCode,
-          CostingCode2: item.U_costingCode2,
-          BaseType: 17, // Tipo da ordem de carregamento
-          BaseEntry: item.U_orderDocEntry,
-          BaseLine: item.U_baseLine,
-          U_description: item.U_description,
-          BatchNumbers: [{
-            BatchNumber: lote.DistNumber,
-            Quantity: lote.Quantity,
-            ItemCode: item.U_itemCode
-          }]
-        });
-      });
+    const numPedido = item.U_numDocPedido;
+    if (!pedidosMap.has(numPedido)) {
+      pedidosMap.set(numPedido, []);
     }
+    pedidosMap.get(numPedido).push(item);
   });
 
-  return {
-    CardCode: this.selected.ORD_CRG_LINHACollection[0]?.U_cardCode || '',
-    DocDueDate: currentDate,
-    DocumentLines: documentLines,
-    BPL_IDAssignedToInvoice: this.selected.U_filial3?.toString(),
-    Comments: `Nota fiscal gerada a partir da ordem de carregamento ${this.selected.DocEntry}`,
-    U_id_pedido_forca: this.selected.DocEntry?.toString(),
-  };
+  // Criar uma nota fiscal para cada pedido
+  const notasFiscais = [];
+  
+  pedidosMap.forEach((linhasPedido, numPedido) => {
+    const documentLines = [];
+    
+    linhasPedido.forEach(item => {
+      // Encontra o item correspondente nos agrupados
+      const itemAgrupado = this.itensSelecaoLoteAgrupado.find(
+        ag => ag.id === item.U_itemCode && ag.deposito === item.U_codigoDeposito
+      );
+      
+      if (itemAgrupado && itemAgrupado.lotes) {
+        // Adiciona cada lote como uma linha separada
+        itemAgrupado.lotes.forEach(lote => {
+          documentLines.push({
+            ItemCode: item.U_itemCode,
+            Quantity: lote.Quantity,
+            UnitPrice: item.U_precoUnitario,
+            WarehouseCode: item.U_codigoDeposito,
+            Usage: item.U_usage,
+            TaxCode: item.U_taxCode,
+            CostingCode: item.U_costingCode,
+            CostingCode2: item.U_costingCode2,
+            BaseType: 17, // Tipo da ordem de carregamento
+            BaseEntry: item.U_orderDocEntry,
+            BaseLine: item.U_baseLine,
+            U_description: item.U_description,
+            BatchNumbers: [{
+              BatchNumber: lote.DistNumber,
+              Quantity: lote.Quantity,
+              ItemCode: item.U_itemCode
+            }]
+          });
+        });
+      }
+    });
+
+    notasFiscais.push({
+      CardCode: linhasPedido[0]?.U_cardCode || '',
+      DocDueDate: currentDate,
+      DocumentLines: documentLines,
+      BPL_IDAssignedToInvoice: this.selected.U_filial3?.toString(),
+      Comments: `Nota fiscal gerada a partir da ordem de carregamento ${this.selected.DocEntry} para o pedido ${numPedido}`,
+      U_id_pedido_forca: this.selected.DocEntry?.toString(),
+      U_numDocPedido: numPedido.toString() // Adiciona o número do pedido como referência
+    });
+  });
+
+  return notasFiscais;
 }
 
   goToPage(page: number) {
