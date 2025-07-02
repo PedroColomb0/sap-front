@@ -31,6 +31,7 @@ export class OrdemCarregamentoStatementComponent implements OnInit, OnDestroy {
       new Column('ID', 'DocEntry'),
       new Column('Nome', 'U_nameOrdem'),
       new Column('Peso Total (Kg)', 'U_pesoTotal'),
+      new Column('Qtd. Pedidos', 'quantidadePedidos'), // Nova coluna
       new Column('Status', 'U_Status'),
       new Column('Criado em', 'dataCriacao')
   ]
@@ -56,15 +57,29 @@ export class OrdemCarregamentoStatementComponent implements OnInit, OnDestroy {
     })
   }
 
-  pageChange($event){
+pageChange($event){
     this.loading = true
     this.service.getAll($event,this.all).subscribe({
-      next : (it: Page<any>) => {
-        this.pageContent = it
-      },
-      complete : () => {this.loading = false}
-    })
-  }
+        next : (it: Page<any>) => {
+            it.content = it.content.map(ordem => {
+                if (ordem.ORD_CRG_LINHACollection) {
+                    const pedidosUnicos = new Set();
+                    ordem.ORD_CRG_LINHACollection.forEach(linha => {
+                        if (linha.U_numDocPedido) {
+                            pedidosUnicos.add(linha.U_numDocPedido);
+                        }
+                    });
+                    ordem.quantidadePedidos = pedidosUnicos.size;
+                } else {
+                    ordem.quantidadePedidos = 0;
+                }
+                return ordem;
+            });
+            this.pageContent = it;
+        },
+        complete : () => {this.loading = false}
+    });
+}
   
   action(event : ActionReturn){
     if(event.type == "selected"){
