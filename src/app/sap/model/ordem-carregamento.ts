@@ -28,7 +28,7 @@ export class OrdemCarregamento {
     }
 
     get dataCriacao() {
-        return moment(this.CreateDate).format('DD/MM/YYYY'); 
+        return moment.utc(this.CreateDate).format('DD/MM/YYYY');
     }
 }
 

@@ -42,25 +42,37 @@
   overflow-x: hidden;
   flex-direction: row;
 
+  .left-list,
+  .right-list {
+    flex: 1; /* Equal width for both lists */
+    min-width: 0; /* Prevent overflow */
+    max-width: 50%; /* Cap each list to half the container width */
+    display: flex;
+    flex-direction: column;
+  }
+
   &.expanded-available {
     .left-list {
-      flex: 3;
+      flex: 1; /* Maintain equal size */
     }
     .right-list {
-      flex: 0.5;
-      min-width: 150px;
+      flex: 1;
+      min-width: 0;
     }
   }
 }
 
 .list-box {
-  flex: 1;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 12px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease, flex 0.3s ease;
+  transition: box-shadow 0.2s ease;
+  flex: 1; /* Take full available space */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Consistent height */
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -97,10 +109,11 @@
 }
 
 .list-content.collapsed {
-  height: 300px;
+  height: 300px; /* Match expanded list height */
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-grow: 1; /* Fill available space */
 }
 
 .total-weight-info {
@@ -119,14 +132,15 @@
 }
 
 .list-container {
-  height: 300px;
+  height: 300px; /* Fixed height for consistency */
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto; /* Enable horizontal scrolling */
   border: 1px solid #e8ecef;
   border-radius: 6px;
   background-color: #f9fafb;
   width: 100%;
   box-sizing: border-box;
+  flex-grow: 1; /* Allow container to grow */
 }
 
 .load-more-wrapper {
@@ -148,6 +162,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  white-space: nowrap; /* Prevent wrapping in header */
 }
 
 .order-info {
@@ -162,6 +177,7 @@
   gap: 8px;
   align-items: center;
   margin-top: 4px;
+  white-space: nowrap; /* Keep stock info on one line */
 }
 
 .stock-green {
@@ -218,14 +234,15 @@
 }
 
 .item-details {
-  white-space: nowrap;
+  white-space: nowrap; /* Prevent text wrapping */
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip; /* Ensure content is scrollable */
   width: 100%;
 }
 
 .list-container::-webkit-scrollbar {
-  width: 8px;
+  width: 8px; /* Vertical scrollbar width */
+  height: 8px; /* Horizontal scrollbar height */
 }
 
 .list-container::-webkit-scrollbar-track {
@@ -258,4 +275,16 @@
   border-radius: 4px;
   font-size: 12px;
   white-space: nowrap;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .dual-list-container {
+    flex-direction: column;
+
+    .left-list,
+    .right-list {
+      max-width: 100%; /* Full width on small screens */
+    }
+  }
 }
