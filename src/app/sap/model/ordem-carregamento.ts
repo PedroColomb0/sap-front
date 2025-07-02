@@ -37,7 +37,7 @@ export class LinhaItem {
     DocEntry: number;
     U_orderDocEntry: number;
     U_cardCode: string;
-    U_docNumPedido: number;
+    U_numDocPedido: number;
     LineId: number;
     VisOrder: number;
     U_quantidade: number;

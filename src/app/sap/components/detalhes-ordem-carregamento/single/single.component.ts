@@ -335,7 +335,7 @@ prepararPayloadNotaFiscal(): any {
   }
 
   definition = [
-    new Column('Núm. do Pedido', 'U_docNumPedido'),
+    new Column('Núm. do Pedido', 'U_numDocPedido'),
     new Column('Cód. Cliente', 'U_cardCode'),
     new Column('Nome Cliente', 'U_cardName'),
     new Column('Cód. Item', 'U_itemCode'),

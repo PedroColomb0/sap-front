@@ -176,7 +176,7 @@ export class OrdemCarregamentoComponent implements OnInit {
     ordemCarregamento.ORD_CRG_LINHACollection = this.selectedOrders.map((pedido, index) => {
       const linha = new LinhaItem();
       linha.U_orderDocEntry = pedido.DocEntry;
-      linha.U_docNumPedido = pedido.DocNum;
+      linha.U_numDocPedido = pedido.DocNum;
       linha.U_cardCode = pedido.CardCode;
       linha.U_cardName = pedido.CardName;
       linha.U_quantidade = pedido.Quantity;
