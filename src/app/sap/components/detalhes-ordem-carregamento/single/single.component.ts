@@ -356,8 +356,8 @@ prepararPayloadNotaFiscal(): any[] {
     new Column('Cód. Item', 'U_itemCode'),
     new Column('Dsc. Item', 'U_description'),
     new Column('Quantidade', 'U_quantidade'),
-    new Column('Peso', 'U_pesoItem'),
+    new Column('Peso', 'U_pesoItem2'),
     new Column('Un. Medida', 'U_unMedida'),
-    new Column('Em Estoque', 'U_qtdEstoque')
+    new Column('Em Estoque', 'U_qtdEmEstoque')
   ];
 }

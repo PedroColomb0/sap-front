@@ -171,7 +171,7 @@ export class OrdemCarregamentoComponent implements OnInit {
     const ordemCarregamento = new OrdemCarregamento();
     ordemCarregamento.U_nameOrdem = this.nameOrdInput;
     ordemCarregamento.U_Status = 'Aberto';
-    ordemCarregamento.U_pesoTotal = this.calcularPesoTotal();
+    ordemCarregamento.U_pesoTotal2 = this.calcularPesoTotal();
     ordemCarregamento.U_filial3 = this.branchId
     ordemCarregamento.ORD_CRG_LINHACollection = this.selectedOrders.map((pedido, index) => {
       const linha = new LinhaItem();
@@ -183,7 +183,7 @@ export class OrdemCarregamentoComponent implements OnInit {
       linha.DocEntry = 0;
       linha.LineId = index;
       linha.VisOrder = index;
-      linha.U_pesoItem = pedido.Weight1;
+      linha.U_pesoItem2 = pedido.Weight1;
       linha.U_itemCode = pedido.ItemCode;
       linha.U_description = pedido.Dscription;
       linha.U_precoUnitario = pedido.UnitPrice
@@ -193,6 +193,8 @@ export class OrdemCarregamentoComponent implements OnInit {
       linha.U_costingCode = pedido.CostingCode
       linha.U_costingCode2 = pedido.CostingCode2
       linha.U_baseLine = pedido.BaseLine
+      linha.U_unMedida = pedido.UomCode
+      linha.U_qtdEmEstoque = pedido.OnHand
       return linha;
     });
 

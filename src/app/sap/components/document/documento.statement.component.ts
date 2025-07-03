@@ -258,6 +258,7 @@ export class PedidoVenda{
   BaseEntry : number
   BaseLine : number
   quantidadeEmCarregamento?: number;
+  UomCode : string
   
   get totalCurrency() {
     return formatCurrency(this.DocTotal, 'pt', 'R$');

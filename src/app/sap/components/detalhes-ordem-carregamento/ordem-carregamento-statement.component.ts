@@ -30,7 +30,7 @@ export class OrdemCarregamentoStatementComponent implements OnInit, OnDestroy {
   definition = [
       new Column('ID', 'DocEntry'),
       new Column('Nome', 'U_nameOrdem'),
-      new Column('Peso Total (Kg)', 'U_pesoTotal'),
+      new Column('Peso Total (Kg)', 'U_pesoTotal2'),
       new Column('Qtd. Pedidos', 'quantidadePedidos'), // Nova coluna
       new Column('Status', 'U_Status'),
       new Column('Criado em', 'dataCriacao')

@@ -13,7 +13,7 @@ export class OrdemCarregamento {
     ORD_CRG_LINHACollection: LinhaItem[];  // Note a mudança no nome da propriedade
     CreateDate: string;
     U_Status: string;
-    U_pesoTotal: number;
+    U_pesoTotal2 : number;
     U_filial3 : string;
 
 
@@ -41,7 +41,7 @@ export class LinhaItem {
     LineId: number;
     VisOrder: number;
     U_quantidade: number;
-    U_pesoItem?: number;
+    U_pesoItem2?: number;
     U_itemCode: string;
     U_description: string;
 
@@ -55,6 +55,9 @@ export class LinhaItem {
     U_baseType : number
     U_baseEntry : number
     U_baseLine : number
+
+    U_unMedida : string
+    U_qtdEmEstoque : number
 
     U_batchNumbers?: { BatchNumber: string; Quantity: number; ItemCode: string }[];
 }
