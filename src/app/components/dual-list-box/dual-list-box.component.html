@@ -7,7 +7,7 @@
   </button>
 </div>
 
-<div class="dual-list-container" [ngClass]="{'expanded-available': isSelectedListCollapsed}">
+<div class="dual-list-container" [ngClass]="{'collapsed-right': isSelectedListCollapsed}">
   <div class="list-box left-list">
     <h5 class="titulo">Disponíveis</h5>
     <input type="text" class="form-control mb-2" placeholder="Pesquisar..." 
@@ -16,7 +16,7 @@
       <div *ngFor="let group of groupedAvailableItems" class="order-group">
         <div class="order-header">
           <span class="order-info" title="{{ group.items.length > 0 ? group.items[0].Name || 'N/A' : 'N/A' }}">
-            Pedido: {{ group.docNum }} | Localidade: <i class="fas fa-map-marker"></i> {{ group.items.length > 0 ? group.items[0].Name || 'N/A' : 'N/A' }}
+            Pedido: {{ group.docNum }} |unin Localidade: <i class="fas fa-map-marker"></i> {{ group.items.length > 0 ? group.items[0].Name || 'N/A' : 'N/A' }}
           </span>
         </div>
         <ul class="order-list">
@@ -58,7 +58,7 @@
     <button class="btn btn-sm btn-primary mt-2" (click)="selectAll()">Selecionar Todos</button>
   </div>
 
-  <div class="list-box right-list">
+  <div class="list-box right-list" [ngClass]="{'collapsed': isSelectedListCollapsed}">
     <div class="list-header">
       <h5>Selecionados</h5>
       <div class="total-weight-info mb-2">
@@ -74,7 +74,6 @@
       <ng-container *ngIf="!isSelectedListCollapsed">
         <input type="text" class="form-control mb-2" placeholder="Pesquisar..." 
                [(ngModel)]="searchTermSelected">
-
         <div class="list-container">
           <div *ngFor="let group of groupedSelectedItems" class="order-group">
             <div class="order-header">

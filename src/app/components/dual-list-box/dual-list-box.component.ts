@@ -30,7 +30,6 @@ export class DualListBoxComponent {
   ) {}
 
   ngOnChanges(): void {
-    // Reload quantidades when availableItems changes
     if (this.showStock) {
       this.loadQuantidadesEmCarregamento();
     }
