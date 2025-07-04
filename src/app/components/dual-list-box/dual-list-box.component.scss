@@ -44,20 +44,33 @@
 
   .left-list,
   .right-list {
-    flex: 1; /* Equal width for both lists */
-    min-width: 0; /* Prevent overflow */
-    max-width: 50%; /* Cap each list to half the container width */
+    flex: 1; /* Equal width by default */
+    min-width: 0;
+    max-width: 50%;
     display: flex;
     flex-direction: column;
+    transition: flex 0.3s ease-in-out, max-width 0.3s ease-in-out; /* Smooth transition for flex and width */
   }
 
-  &.expanded-available {
+  &.collapsed-left {
     .left-list {
-      flex: 1; /* Maintain equal size */
+      flex: 0.2; /* Reduce size when collapsed */
+      max-width: 20%;
     }
     .right-list {
-      flex: 1;
-      min-width: 0;
+      flex: 1.8; /* Expand to take remaining space */
+      max-width: 80%;
+    }
+  }
+
+  &.collapsed-right {
+    .right-list {
+      flex: 0.2; /* Reduce size when collapsed */
+      max-width: 20%;
+    }
+    .left-list {
+      flex: 1.8; /* Expand to take remaining space */
+      max-width: 80%;
     }
   }
 }
@@ -69,14 +82,11 @@
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.2s ease;
-  flex: 1; /* Take full available space */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Consistent height */
-
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  height: 400px; /* Fixed height for consistency */
+  overflow: hidden;
 }
 
 .list-header {
@@ -108,12 +118,16 @@
   padding: 8px;
 }
 
-.list-content.collapsed {
-  height: 300px; /* Match expanded list height */
+.list-content {
+  height: 100%; /* Fill the parent height */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1; /* Fill available space */
+  flex-direction: column;
+  flex-grow: 1;
+  transition: opacity 0.3s ease-in-out; /* Smooth opacity transition */
+}
+
+.list-content.collapsed {
+  opacity: 0.5; /* Fade effect when collapsed */
 }
 
 .total-weight-info {
@@ -132,19 +146,19 @@
 }
 
 .list-container {
-  height: 300px; /* Fixed height for consistency */
+  height: 100%; /* Fill the parent height */
   overflow-y: auto;
-  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-x: auto;
   border: 1px solid #e8ecef;
   border-radius: 6px;
   background-color: #f9fafb;
   width: 100%;
   box-sizing: border-box;
-  flex-grow: 1; /* Allow container to grow */
+  flex-grow: 1;
 }
 
 .load-more-wrapper {
-  margin-bottom: 16px; /* Add margin-bottom for spacing */
+  margin-bottom: 16px;
 }
 
 .order-group {
@@ -162,7 +176,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  white-space: nowrap; /* Prevent wrapping in header */
+  white-space: nowrap;
 }
 
 .order-info {
@@ -177,7 +191,7 @@
   gap: 8px;
   align-items: center;
   margin-top: 4px;
-  white-space: nowrap; /* Keep stock info on one line */
+  white-space: nowrap;
 }
 
 .stock-green {
@@ -234,15 +248,15 @@
 }
 
 .item-details {
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: clip; /* Ensure content is scrollable */
+  text-overflow: clip;
   width: 100%;
 }
 
 .list-container::-webkit-scrollbar {
-  width: 8px; /* Vertical scrollbar width */
-  height: 8px; /* Horizontal scrollbar height */
+  width: 8px;
+  height: 8px;
 }
 
 .list-container::-webkit-scrollbar-track {
@@ -284,7 +298,20 @@
 
     .left-list,
     .right-list {
-      max-width: 100%; /* Full width on small screens */
+      max-width: 100%;
     }
+
+    &.collapsed-left,
+    &.collapsed-right {
+      .left-list,
+      .right-list {
+        flex: 1; /* Equal size in column layout */
+        max-width: 100%;
+      }
+    }
+  }
+
+  .list-box {
+    height: 300px; /* Reduced height for smaller screens */
   }
 }
