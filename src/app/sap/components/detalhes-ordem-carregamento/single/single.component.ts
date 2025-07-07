@@ -6,6 +6,8 @@ import { OrdemCarregamentoService } from '../../../service/ordem-carregamento.se
 import { OrdemCarregamento } from '../../../model/ordem-carregamento';
 import { InvoiceGenerationService } from '../../../service/invoice-generation.service';
 import { BatchStock } from '../../../../modulos/sap-shared/_models/BatchStock.model';
+import { BusinessPartner } from '../../../model/business-partner/business-partner';
+import { BusinessPartnerService } from '../../../service/business-partners.service';
 
 
 class ItemSelecaoLoteAgrupado{ 
@@ -25,7 +27,8 @@ export class OrdemCarregamentoSingleComponent implements OnInit {
   constructor(
     private alertService: AlertService,
     private ordemCarregamentoService: OrdemCarregamentoService,
-    private invoiceGenerationService: InvoiceGenerationService
+    private invoiceGenerationService: InvoiceGenerationService,
+    private businesPartnerService : BusinessPartnerService,
   ) {}
 
   cardName = "windson";
@@ -44,6 +47,7 @@ export class OrdemCarregamentoSingleComponent implements OnInit {
   loading = false;
   showModal = false;
   mostrarDebug = false;
+  businesPartner : BusinessPartner = null;
 
   currentPage: number = 0;
   groupedItems: { itemCode: string, description: string, totalQuantity: number, codDeposito: string }[] = [];
@@ -73,6 +77,13 @@ export class OrdemCarregamentoSingleComponent implements OnInit {
       }
     });
     this.groupedItems = Array.from(itemMap.values());
+  }
+
+  selectBp($event){
+    this.businesPartner = $event
+    this.businesPartnerService.get(this.businesPartner.CardCode).subscribe(it =>{
+        this.businesPartner = it
+    })
   }
 
   getGroupedItems(): Array<ItemSelecaoLoteAgrupado> {

@@ -67,14 +67,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Transportadora</label>
-                                        <input type="text" class="form-control" [(ngModel)]="transportadora" placeholder="Ex: Transportadora XYZ">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Nome da Ordem</label>
-                                        <input type="text" class="form-control" [(ngModel)]="nomeOrdem" placeholder="Ex: Ordem 001">
+                                        <app-transportadora-search (selected)="selectBp($event)" ></app-transportadora-search>
                                     </div>
                                 </div>
                             </div>

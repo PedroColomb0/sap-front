@@ -114,6 +114,7 @@ import { OrdemCarregamentoStatementComponent } from './sap/components/detalhes-o
 import { OrdemCarregamentoSingleComponent } from './sap/components/detalhes-ordem-carregamento/single/single.component';
 import { OrdemCarregamentoService } from './sap/service/ordem-carregamento.service';
 import { SapSharedModule } from './modulos/sap-shared/sap-shared.module';
+import { TransportadoraSearchComponent } from './sap/components/search/transportadora-search/transportadora-search.component';
 
 
 registerLocaleData(localeBr);
@@ -177,6 +178,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     RetiradaComponent,
     GerarPdfComponent,
     DocumentListSingleComponent,
+    TransportadoraSearchComponent,
     PedidosVendaStatementComponent,
     DescontoComponent,
     TabsComponent,
