@@ -47,6 +47,7 @@ export class LinhaItem {
     U_precoNegociado: number;
     U_precoBase: number;
     U_comentario: string;
+    U_fretePorLinha: number;
 
     // Campos novos
     U_precoUnitario : number;

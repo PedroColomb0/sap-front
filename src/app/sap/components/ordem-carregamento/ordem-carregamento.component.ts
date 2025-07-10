@@ -198,6 +198,7 @@ export class OrdemCarregamentoComponent implements OnInit {
       linha.U_precoNegociado = pedido.PrecoNegociado
       linha.U_precoBase = pedido.PrecoBase
       linha.U_comentario = pedido.Comentario
+      linha.U_fretePorLinha = pedido.FretePorLinha
       return linha;
     });
 
