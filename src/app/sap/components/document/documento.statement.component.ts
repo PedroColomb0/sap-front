@@ -251,6 +251,7 @@ export class PedidoVenda{
   UnitPrice : number
   PrecoNegociado : number
   PrecoBase : number
+  Comentario : string
   WarehouseCode : string
   Usage : number
   TaxCode : string
