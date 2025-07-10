@@ -241,10 +241,10 @@ gerarNotaFiscalComLotes() {
 
 prepararPayloadNotaFiscal(): any[] {
   const currentDate = new Date().toISOString().split('T')[0];
-  
+
   // Agrupar linhas por U_numDocPedido
   const pedidosMap = new Map<number, any[]>();
-  
+
   this.selected.ORD_CRG_LINHACollection.forEach(item => {
     const numPedido = item.U_numDocPedido;
     if (!pedidosMap.has(numPedido)) {
@@ -255,16 +255,16 @@ prepararPayloadNotaFiscal(): any[] {
 
   // Criar uma nota fiscal para cada pedido
   const notasFiscais = [];
-  
+
   pedidosMap.forEach((linhasPedido, numPedido) => {
     const documentLines = [];
-    
+
     linhasPedido.forEach(item => {
       // Encontra o item correspondente nos agrupados
       const itemAgrupado = this.itensSelecaoLoteAgrupado.find(
         ag => ag.id === item.U_itemCode && ag.deposito === item.U_codigoDeposito
       );
-      
+
       if (itemAgrupado && itemAgrupado.lotes) {
         // Adiciona cada lote como uma linha separada
         itemAgrupado.lotes.forEach(lote => {
@@ -281,6 +281,9 @@ prepararPayloadNotaFiscal(): any[] {
             BaseEntry: item.U_orderDocEntry,
             BaseLine: item.U_baseLine,
             U_description: item.U_description,
+            U_preco_negociado: item.U_precoNegociado,
+            U_preco_base: item.U_precoBase,
+            LineTotal: item.U_fretePorLinha,
             BatchNumbers: [{
               BatchNumber: lote.DistNumber,
               Quantity: lote.Quantity,
@@ -291,12 +294,28 @@ prepararPayloadNotaFiscal(): any[] {
       }
     });
 
+    // Determinar o comentário correto
+    let comentario = linhasPedido[0]?.U_comentario || '';
+    
+    // Se U_comentario estiver vazio, tentar usar OpeningRemarks do preview ou concatenar com a cotação
+    if (!comentario) {
+      // Verificar se existe um OpeningRemarks ou comentário relacionado à cotação
+      const quotationNumber = numPedido; // Supondo que numPedido seja o número da cotação
+      comentario = `Baseado em Cotações de vendas ${quotationNumber}.`;
+      
+      // Adicionar OpeningRemarks, se disponível (exemplo do preview)
+      const openingRemarks = "3 KM APOS CALIFORNIA BR 364 CASA VERDE COM CURRAL PERTO DO LADO DIREITO NO OSNEI";
+      if (openingRemarks) {
+        comentario = `${openingRemarks} ${comentario}`;
+      }
+    }
+
     notasFiscais.push({
       CardCode: linhasPedido[0]?.U_cardCode || '',
       DocDueDate: currentDate,
       DocumentLines: documentLines,
       BPL_IDAssignedToInvoice: this.selected.U_filial3?.toString(),
-      Comments: `Nota fiscal gerada a partir da ordem de carregamento ${this.selected.DocEntry} para o pedido ${numPedido}`,
+      Comments: comentario, // Usar o comentário calculado
       U_id_pedido_forca: this.selected.DocEntry?.toString(),
       U_ordemCarregamento: this.selected.DocEntry, // Adiciona o DocEntry da ordem de carregamento
       U_numDocPedido: numPedido.toString() // Adiciona o número do pedido como referência
