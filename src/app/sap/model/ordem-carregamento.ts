@@ -44,6 +44,8 @@ export class LinhaItem {
     U_pesoItem2?: number;
     U_itemCode: string;
     U_description: string;
+    U_precoNegociado: number;
+    U_precoBase: number;
 
     // Campos novos
     U_precoUnitario : number;

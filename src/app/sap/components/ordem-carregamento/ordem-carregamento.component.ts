@@ -195,6 +195,8 @@ export class OrdemCarregamentoComponent implements OnInit {
       linha.U_baseLine = pedido.BaseLine
       linha.U_unMedida = pedido.UomCode
       linha.U_qtdEmEstoque = pedido.OnHand
+      linha.U_precoNegociado = pedido.PrecoNegociado
+      linha.U_precoBase = pedido.PrecoBase
       return linha;
     });
 

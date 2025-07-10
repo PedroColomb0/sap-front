@@ -249,6 +249,8 @@ export class PedidoVenda{
   OnOrder : number   
   // Campos Adicionar SQL
   UnitPrice : number
+  PrecoNegociado : number
+  PrecoBase : number
   WarehouseCode : string
   Usage : number
   TaxCode : string
