@@ -244,7 +244,6 @@ prepararPayloadNotaFiscal(): any[] {
 
   // Agrupar linhas por U_numDocPedido
   const pedidosMap = new Map<number, any[]>();
-
   this.selected.ORD_CRG_LINHACollection.forEach(item => {
     const numPedido = item.U_numDocPedido;
     if (!pedidosMap.has(numPedido)) {
@@ -260,13 +259,11 @@ prepararPayloadNotaFiscal(): any[] {
     const documentLines = [];
 
     linhasPedido.forEach(item => {
-      // Encontra o item correspondente nos agrupados
       const itemAgrupado = this.itensSelecaoLoteAgrupado.find(
         ag => ag.id === item.U_itemCode && ag.deposito === item.U_codigoDeposito
       );
 
       if (itemAgrupado && itemAgrupado.lotes) {
-        // Adiciona cada lote como uma linha separada
         itemAgrupado.lotes.forEach(lote => {
           documentLines.push({
             ItemCode: item.U_itemCode,
@@ -277,7 +274,7 @@ prepararPayloadNotaFiscal(): any[] {
             TaxCode: item.U_taxCode,
             CostingCode: item.U_costingCode,
             CostingCode2: item.U_costingCode2,
-            BaseType: 17, // Tipo da ordem de carregamento
+            BaseType: 17,
             BaseEntry: item.U_orderDocEntry,
             BaseLine: item.U_baseLine,
             U_description: item.U_description,
@@ -294,31 +291,34 @@ prepararPayloadNotaFiscal(): any[] {
       }
     });
 
-    // Determinar o comentário correto
     let comentario = linhasPedido[0]?.U_comentario || '';
-    
-    // Se U_comentario estiver vazio, tentar usar OpeningRemarks do preview ou concatenar com a cotação
     if (!comentario) {
-      // Verificar se existe um OpeningRemarks ou comentário relacionado à cotação
-      const quotationNumber = numPedido; // Supondo que numPedido seja o número da cotação
+      const quotationNumber = numPedido;
       comentario = `Baseado em Cotações de vendas ${quotationNumber}.`;
-      
-      // Adicionar OpeningRemarks, se disponível (exemplo do preview)
-      const openingRemarks = "3 KM APOS CALIFORNIA BR 364 CASA VERDE COM CURRAL PERTO DO LADO DIREITO NO OSNEI";
+      const openingRemarks = this.selected.OpeningRemarks || "3 KM APOS CALIFORNIA BR 364 CASA VERDE COM CURRAL PERTO DO LADO DIREITO NO OSNEI";
       if (openingRemarks) {
         comentario = `${openingRemarks} ${comentario}`;
       }
     }
+
+    // Criar o objeto TaxExtension a partir de selected
+    const taxExtension = {
+      Incoterms: this.selected.Incoterms || null, // Aqui faz sentido verificar se existe
+      Vehicle: this.placa || '',
+      Carrier: this.businesPartner?.CardCode || ''
+    };
 
     notasFiscais.push({
       CardCode: linhasPedido[0]?.U_cardCode || '',
       DocDueDate: currentDate,
       DocumentLines: documentLines,
       BPL_IDAssignedToInvoice: this.selected.U_filial3?.toString(),
-      Comments: comentario, // Usar o comentário calculado
+      ClosingRemarks : this.nomeMotorista,
+      Comments: comentario,
       U_id_pedido_forca: this.selected.DocEntry?.toString(),
-      U_ordemCarregamento: this.selected.DocEntry, // Adiciona o DocEntry da ordem de carregamento
-      U_numDocPedido: numPedido.toString() // Adiciona o número do pedido como referência
+      U_ordemCarregamento: this.selected.DocEntry,
+      U_numDocPedido: numPedido.toString(),
+      TaxExtension: (taxExtension.Incoterms, taxExtension.Vehicle, taxExtension.Carrier) ? taxExtension : null
     });
   });
 

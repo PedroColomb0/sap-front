@@ -15,6 +15,10 @@ export class OrdemCarregamento {
     U_Status: string;
     U_pesoTotal2 : number;
     U_filial3 : string;
+    OpeningRemarks
+    VehicleState
+    Incoterms
+    Carrier : string
 
 
     // routerLinkPn() : RouteLink{
