@@ -264,6 +264,7 @@ export class PedidoVenda{
   quantidadeEmCarregamento?: number;
   UomCode : string
   ClosingRemarks : string
+  AttachmentEntry : number
 
   
   get totalCurrency() {

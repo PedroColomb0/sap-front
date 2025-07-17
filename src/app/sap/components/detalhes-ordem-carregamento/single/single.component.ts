@@ -318,7 +318,8 @@ prepararPayloadNotaFiscal(): any[] {
       U_id_pedido_forca: this.selected.DocEntry?.toString(),
       U_ordemCarregamento: this.selected.DocEntry,
       U_numDocPedido: numPedido.toString(),
-      TaxExtension: (taxExtension.Incoterms, taxExtension.Vehicle, taxExtension.Carrier) ? taxExtension : null
+      TaxExtension: (taxExtension.Incoterms, taxExtension.Vehicle, taxExtension.Carrier) ? taxExtension : null,
+      AttachmentEntry: this.selected.U_numeroAnexo
     });
   });
 

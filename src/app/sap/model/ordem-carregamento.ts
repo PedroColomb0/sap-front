@@ -19,6 +19,7 @@ export class OrdemCarregamento {
     VehicleState
     Incoterms
     Carrier : string
+    U_numeroAnexo : number
 
 
     // routerLinkPn() : RouteLink{

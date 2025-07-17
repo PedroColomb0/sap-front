@@ -173,6 +173,7 @@ export class OrdemCarregamentoComponent implements OnInit {
     ordemCarregamento.U_Status = 'Aberto';
     ordemCarregamento.U_pesoTotal2 = this.calcularPesoTotal();
     ordemCarregamento.U_filial3 = this.branchId
+    ordemCarregamento.U_numeroAnexo = 68242
     ordemCarregamento.ORD_CRG_LINHACollection = this.selectedOrders.map((pedido, index) => {
       const linha = new LinhaItem();
       linha.U_orderDocEntry = pedido.DocEntry;

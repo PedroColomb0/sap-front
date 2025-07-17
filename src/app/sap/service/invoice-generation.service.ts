@@ -54,6 +54,7 @@ export class InvoiceGenerationService {
       BPL_IDAssignedToInvoice: loadingOrder.U_filial3,
       Comments: `Nota fiscal gerada a partir da ordem de carregamento ${loadingOrder.DocEntry}`,
       U_id_pedido_forca: loadingOrder.DocEntry.toString(),
+      AttachmentEntry: loadingOrder.U_numeroAnexo,
     };
   }
 }
