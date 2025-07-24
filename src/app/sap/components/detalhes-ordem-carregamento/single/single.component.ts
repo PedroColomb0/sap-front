@@ -8,6 +8,7 @@ import { InvoiceGenerationService } from '../../../service/invoice-generation.se
 import { BatchStock } from '../../../../modulos/sap-shared/_models/BatchStock.model';
 import { BusinessPartner } from '../../../model/business-partner/business-partner';
 import { BusinessPartnerService } from '../../../service/business-partners.service';
+import { PedidosVendaService } from '../../../service/document/pedidos-venda.service';
 
 
 class ItemSelecaoLoteAgrupado{ 
@@ -29,6 +30,7 @@ export class OrdemCarregamentoSingleComponent implements OnInit {
     private ordemCarregamentoService: OrdemCarregamentoService,
     private invoiceGenerationService: InvoiceGenerationService,
     private businesPartnerService : BusinessPartnerService,
+    private pedidosVendaService : PedidosVendaService
   ) {}
 
   cardName = "windson";
@@ -48,6 +50,7 @@ export class OrdemCarregamentoSingleComponent implements OnInit {
   showModal = false;
   mostrarDebug = false;
   businesPartner : BusinessPartner = null;
+  pedidos: any[] = []; // Adicionado
 
   currentPage: number = 0;
   groupedItems: { itemCode: string, description: string, totalQuantity: number, codDeposito: string }[] = [];
@@ -380,15 +383,24 @@ prepararPayloadNotaFiscal(): any[] {
       });
   }
 
-  definition = [
-    new Column('Núm. do Pedido', 'U_numDocPedido'),
-    new Column('Cód. Cliente', 'U_cardCode'),
-    new Column('Nome Cliente', 'U_cardName'),
-    new Column('Cód. Item', 'U_itemCode'),
-    new Column('Dsc. Item', 'U_description'),
-    new Column('Quantidade', 'U_quantidade'),
-    new Column('Peso', 'U_pesoItem2'),
-    new Column('Un. Medida', 'U_unMedida'),
-    new Column('Em Estoque', 'U_qtdEmEstoque')
-  ];
+definition = [
+  new Column('Núm. do Pedido', 'DocNum'),
+  new Column('Cód. Cliente', 'CardCode'),
+  new Column('Nome Cliente', 'CardName'),
+  new Column('Cód. Item', 'ItemCode'),
+  new Column('Dsc. Item', 'Dscription'),
+  new Column('Quantidade', 'Quantity'),
+  new Column('Un. Medida', 'UomCode')
+];
+
+loadPedidos(docEntry: number) {
+  this.pedidosVendaService.search2(docEntry).subscribe({
+    next: (response: any) => {
+      this.pedidos = response.content;
+    },
+    error: (error) => {
+      this.alertService.error('Erro ao carregar pedidos: ' + error.message);
+    }
+  });
+}
 }

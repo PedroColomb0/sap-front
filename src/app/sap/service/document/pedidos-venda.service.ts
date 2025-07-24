@@ -43,6 +43,8 @@ export class PedidosVendaService implements DocumentService{
             }))
     }
 
-    
+    search(docEntry){
+        return true
+    }
 
 }

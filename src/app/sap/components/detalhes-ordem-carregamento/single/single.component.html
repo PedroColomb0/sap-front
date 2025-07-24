@@ -46,9 +46,9 @@
                     <app-tabs>
                         <app-tab tabTitle="Produtos" [active]="true">
                             <app-table
-                                [content]="selected?.ORD_CRG_LINHACollection"
-                                [definition]="definition"
-                                (actionOutput)="action($event)">
+                            [content]="pedidos"
+                            [definition]="definition"
+                            (actionOutput)="action($event)">
                             </app-table>
                         </app-tab>
                         <app-tab tabTitle="Logística">
