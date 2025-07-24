@@ -64,6 +64,11 @@ export class OrdemCarregamentoSingleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    if (this.selected?.DocEntry) {
+      this.loadPedidos(this.selected.DocEntry);
+    }
+
     // Group items by U_itemCode and sum quantities
     const itemMap = new Map<string, { itemCode: string, description: string, totalQuantity: number, codDeposito: string }>();
     this.selected.ORD_CRG_LINHACollection.forEach(item => {
