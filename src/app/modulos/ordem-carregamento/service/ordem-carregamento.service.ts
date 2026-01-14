@@ -109,20 +109,19 @@ export class OrdemCarregamentoService {
       let params = new HttpParams()
         .set('filial', filial.toString())
         .set('localidade', localidade.toString())
-        .set('vendedor', vendedor);
 
       if (vendedor != null) {
         params = params.set('vendedor', vendedor.toString());
       }
-  
+
       if (dataInicial) {
         params = params.set('dataInicial', dataInicial);
       }
-  
+
       if (dataFinal) {
         params = params.set('dataFinal', dataFinal);
       }
-  
+
       return this.http
         .get<NextLink<PedidoVenda>>(`${this.url}/search`, { params })
         .pipe(
